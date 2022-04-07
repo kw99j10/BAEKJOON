@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author ekdhf
+ *
+ */
+module kwj {
+}
