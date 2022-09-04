@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
  
 public class Main { 
     public static void main(String[] args) throws IOException {
-        // 수의 범위 (0 ~ 10000) 사실상 0은 제외
+        // 수의 범위 (1 ~ 10000)
         int[] cnt = new int[10001];
  
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
