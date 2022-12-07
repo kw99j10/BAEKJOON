@@ -1,3 +1,3 @@
-# baekjoon
-# Java
-# hard to solve
+site: baekjoon 
+language: java
+upload: hard to solve
