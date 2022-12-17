@@ -124,7 +124,7 @@ public class CountingGame {
         List<Map.Entry<String, Integer>> entryList = new LinkedList<>(h.entrySet());
         entryList.sort(Map.Entry.comparingByKey());
 
-        int t = 1; // 10개씩 줄바꿈
+        int t = 1; // 10개씩 줄바꿈하여 출력
         for(Map.Entry<String, Integer> entry : entryList){
             System.out.print(entry.getValue()+" ");
             if (t%10==0)
