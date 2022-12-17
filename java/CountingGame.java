@@ -8,7 +8,7 @@ public class CountingGame {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         Scanner sc = new Scanner(System.in);
 
-        String[] s = new String[99]; //1~99까지의 
+        String[] s = new String[99]; //1~99까지의 숫자의 문자열을 담는 배열
 
         for (int i = 0; i < 99; i++) {
 
