@@ -69,7 +69,7 @@ public class DNA {
             else
                 smax.append('T');
 
-            //최빈 문자열이 아닌 열의 문자열을 더함(Hamming Distance의 합)
+            //최빈 문자가 아닌 열의 문자들의 개수(빈도)를 더함(Hamming Distance의 합)
             for(int j=0; j<4; j++) {
                 if(j != maxIndex) {
                     sum += dis[j];
