@@ -39,14 +39,18 @@ public class rgb {
 
     static int paint(int n,int c){
 
+        //해당하는 배열의 값이 채워지지 않았을 경우
         if (color[n][c]==0){
 
+            // 빨강색일 경우 초록색과 파랑색 중에 최소 값을 선택하여 더한다
             if (c==0)
                 color[n][0]=Math.min(paint(n-1,1),paint(n-1,2))+cost[n][0];
 
+            // 초록색일 경우 빨강색과 파랑색 중에 최소 값을 선택하여 더한다
             else if(c==1)
                 color[n][1]=Math.min(paint(n-1,0),paint(n-1,2))+cost[n][1];
 
+            // 파랑색일 경우 초록색과 빨강색 중에 최소 값을 선택하여 더한다
             else
                 color[n][2]=Math.min(paint(n-1,0),paint(n-1,1))+cost[n][2];
 
