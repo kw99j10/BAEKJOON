@@ -40,6 +40,7 @@ public class ChessPaint {
         int paintB = 0; //B부터 시작하는 체스판일 때 다시 칠해야 하는 사각형의 수 W->B
         int paintW = 0; //W부터 시작하는 체스판일 때 다시 칠해야 하는 사각형의 수 B->W
 
+        //8*8크기의 반복문 반복
         for (int i = x; i < x + 8; i++) {
             for (int j = y; j < y + 8; j++) {
                 if ((i + j) % 2 == 0) { //짝수번째 짝수열 또는 홀수번째 홀수열인 경우
