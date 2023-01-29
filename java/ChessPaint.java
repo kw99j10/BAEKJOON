@@ -35,29 +35,29 @@ public class ChessPaint {
         System.out.println(ans);
     }
     //8*8 체스판 중 최소 변경 값을 갖는 체스판의 최소 변경 값 return
-    static int find(int n,int m){
+    static int find(int x, int y) {
 
-        //체스판의 경우의 수는 검은색으로 시작하거나 흰색으로 시작하거나 2가지 경우의 수를 가진다.
+        int paintB = 0; //B부터 시작하는 체스판일 때 다시 칠해야 하는 사각형의 수 W->B
+        int paintW = 0; //W부터 시작하는 체스판일 때 다시 칠해야 하는 사각형의 수 B->W
 
-        int B_count=0; //체스판이 B부터 시작할 때 바꾸어여 할 정사각형의 수 B->W
-        int W_count=0; //체스판이 W부터 시작할 때 바꾸어야 할 정사각형의 수 W->B
-
-        for (int i=n;i<n+8;i++){
-            for (int j=m;j<m+8;j++){
-                if((i + j) % 2 == 0) { //(0부터 시작한다고 가정) 짝수행 짝수 열 또는 홀수행 홀수 열 일 때
-                    //B부터 시작하므로 해당 칸에는 B만 칠해 져야 하는데 W가 칠해져 있는 경우
-                    if(chess[i][j] .equals("W"))
-                        B_count+=1;
-                    else
-                        W_count+=1;
-                }else { // (i + j) % 2 == 1)
-                    if(chess[i][j] .equals("B"))
-                        B_count+=1;
-                    else
-                        W_count+=1;
+        for (int i = x; i < x + 8; i++) {
+            for (int j = y; j < y + 8; j++) {
+                if ((i + j) % 2 == 0) { //짝수번째 짝수열 또는 홀수번째 홀수열인 경우
+                    if (chess[i][j].equals("W")) { //B부터 체스판을 시작
+                        paintB += 1;
+                    }
+                    else //W부터 체스판을 시작
+                        paintW += 1;
+                }
+                else{   //짝수번째 홀수열 또는 홀수번째 짝수열인 경우
+                    if (chess[i][j].equals("B")) { //B부터 체스판을 시작
+                        paintB += 1;
+                    }
+                    else //W부터 체스판을 시작
+                        paintW += 1;
                 }
             }
         }
-        return Math.min(B_count,W_count);
+        return Math.min(paintW, paintB);
     }
 }
