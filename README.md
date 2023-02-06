@@ -3,5 +3,6 @@
 <h5 align="center"> Language:Java</h5>
 <hr/>  
 
-[Rank]  
+[Info]  (https://solved.ac/fkdlsvlrtu)
+<br/><br/>
 ![Solved.ac 프로필](http://mazassumnida.wtf/api/v2/generate_badge?boj=fkdlsvlrtu) 
