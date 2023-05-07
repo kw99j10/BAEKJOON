@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 /**
- * baekjoon 24368 점근적 표기 4
+ * baekjoon 24368 알고리즘- 점근적 표기 4
  *
  */
 public class bigO {
