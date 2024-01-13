@@ -5,29 +5,28 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
 
-        String s = sc.next();
+        String n = sc.next();
 
-        boolean[] b = new boolean[s.length() + 1];
+        boolean[] visit = new boolean[n.length() + 1]; //1번부터 n번까지의 스위치
 
-        //전구가 켜져있으면 false
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) != 'Y') {
-                b[i + 1] = true;
+        //전구가 꺼져 있으면 true
+        for (int i = 0; i < n.length(); i++) {
+            if (n.charAt(i) == 'N') {
+                visit[i + 1] = true;
             }
         }
 
-        int count = 0;
+        int count = 0; //스위치를 누르는 횟수
 
-        for (int i = 1; i < b.length; i++) {
-            if (!b[i]) {
+        for (int i = 1; i < visit.length; i++) {
+            if (visit[i]) {
                 continue;
             }
             count += 1;
-            for (int j = i; j < b.length; j += i) {
-                b[j] = !b[j];
+            for (int j = i; j < visit.length; j += i) {
+                visit[j] = !visit[j];
             }
         }
-
         System.out.println(count);
     }
 }
