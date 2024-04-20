@@ -116,6 +116,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+//웜홀
 public class Main {
     static class Road {
         int node, time;
@@ -125,10 +127,12 @@ public class Main {
             this.time = time;
         }
     }
+
     static int n, m, w;
     static boolean isPossible;
     static int[] time;
     static ArrayList<Road>[] lists;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
@@ -143,6 +147,7 @@ public class Main {
             for (int i = 1; i <= n; i++) {
                 lists[i] = new ArrayList<>();
             }
+
             for (int i = 0; i < m + w; i++) {
                 st = new StringTokenizer(br.readLine());
                 int s = Integer.parseInt(st.nextToken());
@@ -156,13 +161,14 @@ public class Main {
                     lists[e].add(new Road(s, w));
                 }
             }
+
             time = new int[n + 1];
             for (int i = 1; i <= n; i++) {
-                if (timeBack()) {
-                    break;
+                if (!timeBack()) {
+                    break; //시간 여행이 가능하면 반복문 종료
                 }
             }
-            System.out.println(timeBack() ? "NO" : "YES");
+            System.out.println(timeBack() ? "YES" : "NO");
         }
     }
     private static boolean timeBack() {
@@ -175,6 +181,6 @@ public class Main {
                 }
             }
         }
-        return !isPossible;
+        return isPossible; //시간 여행을 할 수 있는지
     }
 }
