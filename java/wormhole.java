@@ -116,8 +116,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
-//웜홀
 public class Main {
     static class Road {
         int node, time;
@@ -127,13 +125,10 @@ public class Main {
             this.time = time;
         }
     }
-
     static int n, m, w;
     static boolean isPossible;
     static int[] time;
     static ArrayList<Road>[] lists;
-    static final int INF = 9999999;
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
@@ -148,7 +143,6 @@ public class Main {
             for (int i = 1; i <= n; i++) {
                 lists[i] = new ArrayList<>();
             }
-
             for (int i = 0; i < m + w; i++) {
                 st = new StringTokenizer(br.readLine());
                 int s = Integer.parseInt(st.nextToken());
@@ -162,11 +156,10 @@ public class Main {
                     lists[e].add(new Road(s, w));
                 }
             }
-
             time = new int[n + 1];
             for (int i = 1; i <= n; i++) {
                 if (timeBack()) {
-                    break; //시간 여행이 불가능하면 반복문 종료 
+                    break;
                 }
             }
             System.out.println(timeBack() ? "NO" : "YES");
@@ -176,14 +169,12 @@ public class Main {
         isPossible = false;
         for (int i = 1; i <= n; i++) {
             for (Road current : lists[i]) {
-                if (time[i] != INF) {
-                    if (time[current.node] > time[i] + current.time) {
-                        time[current.node] = time[i] + current.time;
-                        isPossible = true; //현재 위치에서 시간이 뒤로가는 경우 갱신
-                    }
+                if (time[current.node] > time[i] + current.time) {
+                    time[current.node] = time[i] + current.time;
+                    isPossible = true;
                 }
             }
         }
-        return !isPossible; //시간이 뒤로가지 않으면 종료
+        return !isPossible;
     }
 }
