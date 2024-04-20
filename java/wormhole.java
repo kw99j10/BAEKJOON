@@ -107,3 +107,83 @@ public class Main {
         return false;
     }
 }
+
+
+//2번째 풀이 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+//웜홀
+public class Main {
+    static class Road {
+        int node, time;
+
+        public Road(int node, int time) {
+            this.node = node;
+            this.time = time;
+        }
+    }
+
+    static int n, m, w;
+    static boolean isPossible;
+    static int[] time;
+    static ArrayList<Road>[] lists;
+    static final int INF = 9999999;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        int test = Integer.parseInt(br.readLine());
+        for (int t = 0; t < test; t++) {
+            st = new StringTokenizer(br.readLine());
+            n = Integer.parseInt(st.nextToken());
+            m = Integer.parseInt(st.nextToken());
+            w = Integer.parseInt(st.nextToken());
+
+            lists = new ArrayList[n + 1];
+            for (int i = 1; i <= n; i++) {
+                lists[i] = new ArrayList<>();
+            }
+
+            for (int i = 0; i < m + w; i++) {
+                st = new StringTokenizer(br.readLine());
+                int s = Integer.parseInt(st.nextToken());
+                int e = Integer.parseInt(st.nextToken());
+                int w = Integer.parseInt(st.nextToken());
+
+                if (i >= m) {
+                    lists[s].add(new Road(e, -w));
+                } else {
+                    lists[s].add(new Road(e, w));
+                    lists[e].add(new Road(s, w));
+                }
+            }
+
+            time = new int[n + 1];
+            for (int i = 1; i <= n; i++) {
+                if (timeBack()) {
+                    break; //시간 여행이 불가능하면 반복문 종료 
+                }
+            }
+            System.out.println(timeBack() ? "NO" : "YES");
+        }
+    }
+    private static boolean timeBack() {
+        isPossible = false;
+        for (int i = 1; i <= n; i++) {
+            for (Road current : lists[i]) {
+                if (time[i] != INF) {
+                    if (time[current.node] > time[i] + current.time) {
+                        time[current.node] = time[i] + current.time;
+                        isPossible = true; //현재 위치에서 시간이 뒤로가는 경우 갱신
+                    }
+                }
+            }
+        }
+        return !isPossible; //시간이 뒤로가지 않으면 종료
+    }
+}
