@@ -1,16 +1,15 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 //숫자고르기
 public class Main {
     static int n;
     static int[] arr;
     static boolean[] visit;
-    static ArrayList<Integer> tmp;
-    static TreeSet<Integer> result;
+    static ArrayList<Integer> result;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -22,31 +21,28 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
         visit = new boolean[n + 1];
-        tmp = new ArrayList<>();
-        result = new TreeSet<>();
+        result = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
-            if (!visit[i]) {
-                tmp = new ArrayList<>();
-                visit[i] = true;
-                tmp.add(i);
-                dfs(i, i);
-            }
+            visit[i] = true;
+            dfs(i, i);
+            visit[i] = false;
         }
         System.out.println(result.size());
+        Collections.sort(result);
         for (Integer i : result) {
             System.out.println(i);
         }
     }
 
     static void dfs(int start, int end) {
+
         if (arr[start] == end) {
-            result.addAll(tmp);
+            result.add(end);
             return;
         }
 
         if (!visit[arr[start]]) {
             visit[arr[start]] = true;
-            tmp.add(arr[start]);
             dfs(arr[start], end);
             visit[arr[start]] = false;
         }
