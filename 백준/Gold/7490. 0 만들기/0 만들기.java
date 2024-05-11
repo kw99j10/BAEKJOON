@@ -2,8 +2,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.StringTokenizer;
 
 // 0 만들기
 public class Main {
@@ -33,16 +31,24 @@ public class Main {
         if (cnt == n) {
             String tmp = s.replaceAll(" ", ""); //공백 문자 치환
 
-            //'+','-'는 구분자이지만 토큰에 포함
-            StringTokenizer st = new StringTokenizer(tmp, "+|-", true);
-            int sum = Integer.parseInt(st.nextToken());
-            while (st.hasMoreTokens()) {
-                if (st.nextToken().equals("+")) {
-                    sum += Integer.parseInt(st.nextToken());
+            int sum = 0;
+            int num = 0;
+            int check = 1;
+            for (int i = 0; i < tmp.length(); i++) {
+                char c = tmp.charAt(i);
+                if (c == '+') {
+                    sum += check * num;
+                    num = 0;
+                    check = 1;
+                } else if (c == '-') {
+                    sum += check * num;
+                    num = 0;
+                    check = -1;
                 } else {
-                    sum -= Integer.parseInt(st.nextToken());
+                    num = num * 10 + (c - '0');
                 }
             }
+            sum += check * num;
             if (sum == 0) {
                 result.add(s);
             }
