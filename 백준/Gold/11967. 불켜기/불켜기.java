@@ -9,17 +9,13 @@ import java.util.StringTokenizer;
 public class Main {
     static class Node {
         int x, y;
-
         public Node(int x, int y) {
             this.x = x;
             this.y = y;
         }
     }
-
     static int n, m;
     static ArrayList<Node>[][] farm;
-    static boolean[][] visit;
-    static boolean[][] turnOn;
     static int[] dx = {1, -1, 0, 0};
     static int[] dy = {0, 0, 1, -1};
 
@@ -44,20 +40,18 @@ public class Main {
             int b = Integer.parseInt(st.nextToken());
             farm[x][y].add(new Node(a, b));
         }
-
-        turnOn = new boolean[n + 1][n + 1]; // 방이 불이 켜져 있는지 여부
-        turnOn[1][1] = true; //시작하는 방은 불이 켜져있음
-        System.out.println(bfs() + 1);
+        System.out.println(bfs());
     }
 
     static int bfs() {
         ArrayDeque<Node> queue = new ArrayDeque<>();
         queue.add(new Node(1, 1));
-        visit = new boolean[n + 1][n + 1]; // 방을 방문했는지 여부는 초기화
+        boolean[][] visit = new boolean[n + 1][n + 1]; // 방을 방문했는지 여부는 초기화
+        boolean[][] turnOn = new boolean[n + 1][n + 1]; // 방이 불이 켜져 있는지 여부
+        turnOn[1][1] = true; //시작하는 방은 불이 켜져있음
         visit[1][1] = true;
 
         int count = 0;
-        boolean isPossible = false; //불 켜기를 진행할 수 있는지 여부
         while (!queue.isEmpty()) {
             Node current = queue.poll();
             int x = current.x;
@@ -65,12 +59,12 @@ public class Main {
 
             // 베시의 현재 위치에서 불을 켤 수 있는 방의 개수
             for (Node next : farm[x][y]) {
-                if (turnOn[next.x][next.y]) {
-                    continue;
+                int nx = next.x;
+                int ny = next.y;
+                if (!turnOn[nx][ny] && visit[nx][ny]) {
+                    queue.add(new Node(nx, ny)); //방문 가능한 위치
                 }
-                count++;
-                turnOn[next.x][next.y] = true;
-                isPossible = true;
+                turnOn[nx][ny] = true;
             }
 
             // 현재 위치에서 이동할 수 있는 방향 탐색
@@ -82,18 +76,19 @@ public class Main {
                     continue;
                 }
 
-                if (!turnOn[nx][ny] || visit[nx][ny]) {
-                    continue;
+                if (turnOn[nx][ny] && !visit[nx][ny]) {
+                    queue.add(new Node(nx, ny));
                 }
-
-                // 현재 위치에서 방문할 수 있는 곳
-                visit[nx][ny] = true;
-                queue.add(new Node(nx, ny));
+                visit[nx][ny] = true; // 현재 위치에서 방문할 수 있는 곳
             }
         }
 
-        if (isPossible) {
-            count += bfs(); //불을 켤 수 있는 방이 존재
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (turnOn[i][j]) {
+                    count++; //불이 켜진 방
+                }
+            }
         }
         return count;
     }
