@@ -24,7 +24,7 @@ public class Main {
         }
     }
 
-    static int n, k, s;
+    static int n, k;
     static int[][] lab;
     static ArrayList<Node> lists;
     static int[] dx = {1, -1, 0, 0};
@@ -47,16 +47,16 @@ public class Main {
                 }
             }
         }
-        Collections.sort(lists);
+        Collections.sort(lists); //번호가 낮은 순부터 증식하기 위한 정렬
         st = new StringTokenizer(br.readLine());
-        s = Integer.parseInt(st.nextToken());
+        int s = Integer.parseInt(st.nextToken());
         int ex = Integer.parseInt(st.nextToken()) - 1;
         int ey = Integer.parseInt(st.nextToken()) - 1;
-        bfs();
+        bfs(s);
         System.out.println(lab[ex][ey]);
     }
 
-    static void bfs() {
+    static void bfs(int s) {
         ArrayDeque<Node> queue = new ArrayDeque<>(lists);
 
         while (!queue.isEmpty()) {
