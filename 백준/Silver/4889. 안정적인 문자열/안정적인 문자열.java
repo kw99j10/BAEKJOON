@@ -16,30 +16,21 @@ public class Main {
                 break; //종료 조건
             }
             Stack<Character> stack = new Stack<>();
-            int count = 0; //필요한 최소 연산 수
+            int count = 0;
             for (int i = 0; i < s.length(); i++) {
-                char c = s.charAt(i); // '{' or '}'
+                char c = s.charAt(i);
                 if (c == '{') {
                     stack.push(c);
-                } else {
-                    if (!stack.isEmpty() && stack.peek() == '{') {
+                }else{
+                    if (stack.isEmpty()) {
+                        stack.push('{');
+                        count++;
+                    }else{
                         stack.pop();
-                    } else {
-                        stack.push(c);
                     }
                 }
             }
-            int open = 0; //여는 괄호
-            int close = 0; //닫는 괄호
-            while (!stack.isEmpty()) {
-                Character tmp = stack.pop();
-                if (tmp == '{') {
-                    open++;
-                } else {
-                    close++;
-                }
-            }
-            count = (open + 1) / 2 + (close + 1) / 2;
+            count += stack.size() / 2;
             sb.append(idx++).append(". ").append(count).append("\n");
         }
         System.out.print(sb);
