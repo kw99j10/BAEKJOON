@@ -72,19 +72,6 @@ public class Main {
                             x = j;
                             y = k;
                         }
-
-                        //조건 3: 행 번호 가장 작은 칸
-                        else if (blank == free) {
-
-                            if (x > j) {
-                                x = j;
-                                y = k;
-                            }
-                            //조건 4: 열 번호 가장 작은 칸
-                            else if (x == j && y > k) {
-                                y = k;
-                            }
-                        }
                     }
                 }
             }
@@ -112,15 +99,7 @@ public class Main {
                     }
                 }
 
-                if (count == 1) {
-                    sum += 1;
-                } else if (count == 2) {
-                    sum += 10;
-                } else if (count == 3) {
-                    sum += 100;
-                } else if (count == 4) {
-                    sum += 1000;
-                }
+                sum += (int) Math.pow(10, --count);
             }
         }
         System.out.println(sum);
