@@ -11,8 +11,8 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
         int[] num = new int[n];
 
-        //범위가 -10000 ~ 10000 => 합의 범위는 -20000 ~ 20000
-        int[] student = new int[40001];
+        //범위가 -10000 ~ 10000 => 세 수의 합의 범위는 -30000 ~ 30000
+        int[] student = new int[60001];
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             num[i] = Integer.parseInt(st.nextToken());
@@ -20,9 +20,9 @@ public class Main {
 
         long cnt = 0;
         for (int i = 0; i < n; i++) {
-            cnt += student[20000 - num[i]];
+            cnt += student[30000 - num[i]];
             for (int j = 0; j < i; j++) {
-                student[20000 + num[i] + num[j]]++;
+                student[30000 + num[i] + num[j]]++;
             }
         }
         System.out.println(cnt);
