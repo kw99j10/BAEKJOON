@@ -1,50 +1,50 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.StringTokenizer;
 
-//숫자고르기
+//2668 숫자고르기
 public class Main {
     static int n;
-    static int[] arr;
+    static int[] num;
     static boolean[] visit;
-    static ArrayList<Integer> result;
-
-    public static void main(String[] args) throws Exception {
+    static ArrayList<Integer> lists;
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        StringTokenizer st;
-        arr = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            st = new StringTokenizer(br.readLine());
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
+        int n = Integer.parseInt(br.readLine());
+        num = new int[n + 1];
         visit = new boolean[n + 1];
-        result = new ArrayList<>();
+        lists = new ArrayList<>();
+
         for (int i = 1; i <= n; i++) {
-            visit[i] = true;
-            dfs(i, i);
-            visit[i] = false;
+            num[i] = Integer.parseInt(br.readLine());
         }
-        System.out.println(result.size());
-        Collections.sort(result);
-        for (Integer i : result) {
-            System.out.println(i);
+
+        for (int i = 1; i <= n; i++) {
+            if (!visit[i]) {
+                dfs(i, i);
+            }
         }
+        StringBuilder sb = new StringBuilder();
+        for (Integer next : lists) {
+            sb.append(next).append("\n");
+        }
+        System.out.println(lists.size());
+        System.out.print(sb);
     }
 
     static void dfs(int start, int end) {
 
-        if (arr[start] == end) {
-            result.add(end);
+        //정수들이 이루는 집합 = 뽑힌 정수들의 바로 밑의 정수들의 집합
+        if (num[start] == end) {
+            lists.add(end);
             return;
         }
 
-        if (!visit[arr[start]]) {
-            visit[arr[start]] = true;
-            dfs(arr[start], end);
-            visit[arr[start]] = false;
+        if (!visit[num[start]]) {
+            visit[num[start]] = true;
+            dfs(num[start], end);
+            visit[num[start]] = false;
         }
     }
 }
