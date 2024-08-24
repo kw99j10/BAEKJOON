@@ -6,17 +6,16 @@ import java.util.StringTokenizer;
 
 // 1043 거짓말 
 public class Main {
-    static int n, answer;
     static int[] parents;
     static ArrayList<Integer>[] party; // 파티에 참여한 사람
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
-        answer = m; //이야기를 할 수 있는 최대 파티 개수
-
+        int answer = m; //이야기를 할 수 있는 최대 파티 개수
+        
         parents = new int[n + 1];
         for (int i = 1; i <= n; i++) {
             parents[i] = i;
@@ -24,9 +23,8 @@ public class Main {
 
         st = new StringTokenizer(br.readLine());
         int know = Integer.parseInt(st.nextToken());
-
         if (know == 0) {
-            System.out.println(answer); // 없다면 파티 수와 같음
+            System.out.println(answer); // 진실을 아는 사람이 없다면 파티 수와 같음
             return;
         }
 
@@ -35,7 +33,7 @@ public class Main {
             known[i] = Integer.parseInt(st.nextToken());
         }
 
-        party = new ArrayList[m + 1];
+        ArrayList<Integer>[] party = new ArrayList[m + 1]; // 같은 파티에 참여한 사람
         for (int i = 1; i <= m; i++) {
             party[i] = new ArrayList<>();
 
@@ -54,13 +52,11 @@ public class Main {
             int start = party[i].get(0);
             for (int j = 1; j <= know; j++) {
                 if (find(start) == find(known[j])) {
-                    answer--;
+                    answer--; // 현재 파티에 진실을 아는 사람이 존재하는 경우 
                     break;
                 }
             }
         }
-
-
         System.out.println(answer);
     }
 
