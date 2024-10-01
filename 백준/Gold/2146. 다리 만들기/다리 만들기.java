@@ -3,69 +3,62 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-//다리 만들기
+// 2146 다리 만들기
 public class Main {
     static int n;
-    static int[][] map;
+    static int[][] country;
     static boolean[][] visit;
+
     static int[] dx = {1, -1, 0, 0};
     static int[] dy = {0, 0, 1, -1};
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        StringTokenizer st;
-
         n = Integer.parseInt(br.readLine());
-        map = new int[n][n];
+        StringTokenizer st;
+        country = new int[n][n];
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < n; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
+                country[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
         visit = new boolean[n][n];
-
-        int name = 1; //대륙 별로 분류
+        int name = 0; // 대륙 라벨링
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (!visit[i][j] && map[i][j] == 1) {
-                    dfs(i, j, map[i][j], name);
-                    name++;
+                if (!visit[i][j] && country[i][j] != 0) {
+                    dfs(i, j, country[i][j], ++name);
                 }
             }
         }
 
-        int totalMin = Integer.MAX_VALUE; //total 짧은 다리의 길이
-        //대륙의 개수만큼 반복문 수행
-        for (int c = 1; c <= name; c++) {
-            int min = Integer.MAX_VALUE; //현재 짧은 다리의 길이
+        int min = Integer.MAX_VALUE;
+        // 라벨링한 도시 집단 별로 거리 계산
+        for (int label = 1; label <= name; label++) {
+            int tmp = Integer.MAX_VALUE;
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (map[i][j] == c) {
+                    if (label == country[i][j]) {
                         for (int k = 0; k < n; k++) {
                             for (int s = 0; s < n; s++) {
-                                //다른 대륙 발견
-                                if (map[k][s] > c) {
+                                if (country[k][s] > label) {
                                     int distance = Math.abs(i - k) + Math.abs(j - s) - 1;
-                                    min = Math.min(min, distance);
+                                    tmp = Math.min(tmp, distance);
                                 }
                             }
                         }
                     }
                 }
             }
-            totalMin = Math.min(totalMin, min);
+            min = Math.min(min, tmp);
         }
-        System.out.println(totalMin);
+        System.out.println(min);
     }
 
-    static void dfs(int x, int y, int old, int newName) {
-
+    static void dfs(int x, int y, int label, int name) {
         visit[x][y] = true;
-        map[x][y] = newName;
-
+        country[x][y] = name; //label -> name
         for (int d = 0; d < 4; d++) {
             int nx = x + dx[d];
             int ny = y + dy[d];
@@ -74,9 +67,8 @@ public class Main {
                 continue;
             }
 
-            if (map[nx][ny] == old) {
-                visit[nx][ny] = true;
-                dfs(nx, ny, old, newName);
+            if (country[nx][ny] == label) {
+                dfs(nx, ny, label, name);
             }
         }
     }
