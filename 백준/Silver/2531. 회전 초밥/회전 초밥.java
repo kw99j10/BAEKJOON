@@ -1,10 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
 import java.util.StringTokenizer;
 
-//2531 회전 초밥
+//2531 회전 초밥 - 투포인터 사용
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,28 +17,38 @@ public class Main {
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(br.readLine());
         }
+        int[] sushi = new int[d + 1];
 
-        int max = 0;
+        int cnt = 0;
+        for (int i = 0; i < k; i++) {
+            if (sushi[arr[i]] == 0) {
+                cnt++;
+            }
+            sushi[arr[i]]++;
+        }
 
-        HashSet<Integer> set = new HashSet<>(); // 먹을 수 있는 초밥 가짓 수
+        int max = cnt; // 최소 먹을 수 있는 초밥 수
         for (int i = 0; i < n; i++) {
-
-            int end = (i + k - 1) % n;
-            if (i > end) {
-                for (int j = i; j < n; j++) {
-                    set.add(arr[j]);
-                }
-                for (int j = 0; j <= end; j++) {
-                    set.add(arr[j]);
-                }
-            }else{
-                for (int j = i; j <= end; j++) {
-                    set.add(arr[j]);
+            if (cnt >= max) {
+                if (sushi[c] == 0) {
+                    max = cnt + 1; // 쿠폰 초밥 여부 판단
+                } else {
+                    max = cnt;
                 }
             }
-            set.add(c); // 쿠폰 초밥
-            max = Math.max(max, set.size());
-            set.clear();
+
+            // 이전 초밥
+            sushi[arr[i]]--;
+            if (sushi[arr[i]] == 0) {
+                cnt--;
+            }
+
+            // 다음 초밥
+            int end = (i + k) % n;
+            if (sushi[arr[end]] == 0) {
+                cnt++;
+            }
+            sushi[arr[end]]++;
         }
         System.out.println(max);
     }
