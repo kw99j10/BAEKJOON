@@ -29,21 +29,14 @@ public class Main {
 
         int count = 0;
 
-        StringBuilder tmp = new StringBuilder();
-        if (k > String.valueOf(x).length()) {
-            tmp.append("0".repeat(k - String.valueOf(x).length()));
-        }
-        tmp.append(x); //501층, k=4 이면 "0501"로 나타냄
+        //501층, k=4 이면 "0501"로 나타냄
+        String tmp = "0".repeat(k - String.valueOf(x).length()) + x;
 
         for (int i = 1; i <= n; i++) {
             if (i == x) {
                 continue; //같은 층
             }
-            String s = "";
-            if (k > String.valueOf(i).length()) {
-                s += "0".repeat(k-String.valueOf(i).length());
-            }
-            s += String.valueOf(i);
+            String s = "0".repeat(k - String.valueOf(i).length()) + i;
 
             int cnt = 0; //반전시킬 횟수
             for (int j = 0; j < s.length(); j++) {
