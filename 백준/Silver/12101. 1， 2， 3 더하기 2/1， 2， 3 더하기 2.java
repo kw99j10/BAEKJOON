@@ -15,24 +15,20 @@ public class Main {
         k = Integer.parseInt(st.nextToken());
 
         lists = new ArrayList<>();
-        backtracking(0, "");
+        backtracking(0, new StringBuilder());
         System.out.println(k > lists.size() ? -1 : lists.get(k - 1));
     }
 
-    static void backtracking(int sum, String tmp) {
+    static void backtracking(int sum, StringBuilder tmp) {
         if (sum >= n) {
             if (sum == n) {
-                lists.add(tmp);
+                lists.add(tmp.substring(0, tmp.length() - 1));
             }
             return;
         }
 
         for (int i = 1; i <= 3; i++) {
-            if (sum == 0) {
-                backtracking(sum + i, String.format("%d", i));
-            }else{
-                backtracking(sum + i, String.format("%s+%d", tmp, i));
-            }
+            backtracking(sum + i, new StringBuilder().append(tmp).append(i).append("+"));
         }
     }
 }
