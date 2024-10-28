@@ -46,7 +46,6 @@ public class Main {
         Collections.sort(lists); // 조건 순 정렬
 
         int rank = 1;
-        int diff = 0;
         int[] ranks = new int[n + 1];
         ranks[lists.get(0).num] = rank;
         for (int i = 1; i < n; i++) {
@@ -54,16 +53,12 @@ public class Main {
             Medal current = lists.get(i);
 
             //공동
-            if (before.gold == current.gold && before.silver == current.silver && before.bronze == current.bronze) {
-                ranks[current.num] = rank;
-                diff++;
-            } else {
-                rank += 1;
-                ranks[current.num] = rank + diff;
-                diff = 0;
+            if (before.gold != current.gold || before.silver != current.silver || before.bronze != current.bronze) {
+                rank = i + 1;
             }
+            ranks[current.num] = rank;
         }
-        
+
         System.out.println(ranks[k]);
     }
 }
