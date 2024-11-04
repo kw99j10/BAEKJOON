@@ -21,8 +21,8 @@ public class Main {
             dp[i] = 1; // LIS
 
             for (int j = 0; j < i; j++) {
-                if (box[i] > box[j] && dp[j] + 1 > dp[i]) {
-                    dp[i] += 1;
+                if (box[i] > box[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
                 max = Math.max(max, dp[i]);
             }
