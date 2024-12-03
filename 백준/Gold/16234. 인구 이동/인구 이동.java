@@ -11,7 +11,6 @@ public class Main {
     static int[][] grid;
     static boolean[][] visit;
     static int[][] move = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-    static boolean isPossible;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,11 +33,11 @@ public class Main {
     static void move() {
         while (true) {
             visit = new boolean[n][n];
-            isPossible = false;
+            boolean isPossible = false;
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (!visit[i][j]) {
-                        bfs(i, j);
+                    if (!visit[i][j] && bfs(i, j)) {
+                        isPossible = true;
                     }
                 }
             }
@@ -49,7 +48,7 @@ public class Main {
         }
     }
 
-    static void bfs(int x, int y) {
+    static boolean bfs(int x, int y) {
         ArrayDeque<int[]> queue = new ArrayDeque<>();
         ArrayList<int[]> union = new ArrayList<>(); // 연합 리스트
 
@@ -68,22 +67,27 @@ public class Main {
                 }
 
                 if (Math.abs(grid[nx][ny] - grid[current[0]][current[1]]) >= l &&
-                    Math.abs(grid[nx][ny] - grid[current[0]][current[1]]) <= r) {
+                        Math.abs(grid[nx][ny] - grid[current[0]][current[1]]) <= r) {
                     visit[nx][ny] = true;
-                    isPossible = true;
                     queue.add(new int[]{nx, ny});
                     union.add(new int[]{nx, ny});
                 }
             }
         }
 
-        int sum = 0; // 연합의 인구 수
-        for (int[] current : union) {
-            sum += grid[current[0]][current[1]];
-        }
+        // 연합이 있다 -> 인구 이동이 가능하다
+        if (union.size() > 1) {
+            int sum = 0; // 연합의 인구 수
+            for (int[] current : union) {
+                sum += grid[current[0]][current[1]];
+            }
 
-        for (int[] current : union) {
-            grid[current[0]][current[1]] = sum / union.size();
+            for (int[] current : union) {
+                grid[current[0]][current[1]] = sum / union.size();
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 }
