@@ -48,30 +48,24 @@ public class Main {
                 return;
             }
 
-            // 부술 벽이 있는 경우
-            if (isBroken > 0) {
-                for (int d = 0; d < 4; d++) {
-                    int nx = x + move[d][0];
-                    int ny = y + move[d][1];
-
-                    if (nx < 0 || nx >= n || ny < 0 || ny >= m || visit[nx][ny][isBroken - 1]) {
-                        continue;
-                    }
-                    visit[nx][ny][isBroken - 1] = true;
-                    queue.add(new int[]{nx, ny, distance + 1, isBroken - 1});
-                }
-            }
-
-            // 부술 벽이 없는 경우
             for (int d = 0; d < 4; d++) {
                 int nx = x + move[d][0];
                 int ny = y + move[d][1];
-
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m || visit[nx][ny][isBroken] || map[nx][ny] == 1) {
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m) {
                     continue;
                 }
-                visit[nx][ny][isBroken] = true;
-                queue.add(new int[]{nx, ny, distance + 1, isBroken});
+
+                // 벽에 대하여
+                if (map[nx][ny] == 1 && isBroken > 0 && !visit[nx][ny][isBroken - 1]) {
+                    visit[nx][ny][isBroken - 1] = true;
+                    queue.add(new int[]{nx, ny, distance + 1, isBroken - 1});
+                }
+
+                // 이동 경로에 대하여
+                else if (map[nx][ny] == 0 && !visit[nx][ny][isBroken]) {
+                    visit[nx][ny][isBroken] = true;
+                    queue.add(new int[]{nx, ny, distance + 1, isBroken});
+                }
             }
         }
     }
