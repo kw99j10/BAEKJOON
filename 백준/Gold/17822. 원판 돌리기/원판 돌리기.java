@@ -1,156 +1,134 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 // 17822 원판 돌리기
 public class Main {
-    static class Spin {
-        int x, d, k;
-
-        public Spin(int x, int d, int k) {
-            this.x = x;
-            this.d = d;
-            this.k = k;
-        }
-    }
-
-    static ArrayList<Spin> lists;
-    static LinkedList<Integer>[] circle;
+    static int[][] circle;
+    static int[][] seq;
     static int n, m, T;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken()); // n번 원판
-        m = Integer.parseInt(st.nextToken()); // 적힌 정수 개수
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
         T = Integer.parseInt(st.nextToken());
-
-        circle = new LinkedList[n + 1];
+        circle = new int[n + 1][m];
         for (int i = 1; i <= n; i++) {
             st = new StringTokenizer(br.readLine());
-            circle[i] = new LinkedList<>();
             for (int j = 0; j < m; j++) {
-                circle[i].add(Integer.parseInt(st.nextToken()));
+                circle[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        lists = new ArrayList<>();
+        seq = new int[T][3];
         for (int t = 0; t < T; t++) {
             st = new StringTokenizer(br.readLine());
-            int x = Integer.parseInt(st.nextToken()); // 배수
-            int d = Integer.parseInt(st.nextToken()); // 방향
-            int k = Integer.parseInt(st.nextToken()); // k칸 만큼
-            lists.add(new Spin(x, d, k));
+            seq[t][0] = Integer.parseInt(st.nextToken());
+            seq[t][1] = Integer.parseInt(st.nextToken());
+            seq[t][2] = Integer.parseInt(st.nextToken());
         }
 
         for (int t = 0; t < T; t++) {
-            spin(t); //t번 회전
+            spin(t);
         }
-        System.out.println(getSum()); // 원판 합
+        System.out.println(getSum());
     }
 
-    static void spin(int t) { // 원판 회전
-        int x = lists.get(t).x; // 배수 번호
-        int d = lists.get(t).d; // 방향
-        int k = lists.get(t).k;
-
-        // x 배수에 해당하는 원판을 d 방향으로 k번 만큼 이동
+    static void spin(int t) {
+        int x = seq[t][0];
+        int d = seq[t][1];
+        int k = seq[t][2];
         for (int i = x; i <= n; i += x) {
-            for (int j = 0; j < k; j++) {
+            int[] tmp = new int[m];
+            for (int j = 0; j < m; j++) {
                 if (d == 0) {
-                    int tmp = circle[i].getLast();
-                    circle[i].removeLast();
-                    circle[i].addFirst(tmp);
+                    tmp[(j + k) % m] = circle[i][j];
                 } else {
-                    int tmp = circle[i].getFirst();
-                    circle[i].removeFirst();
-                    circle[i].addLast(tmp);
+                    tmp[(j - k + m) % m] = circle[i][j];
                 }
             }
+            circle[i] = tmp;
         }
-
         check();
     }
 
     static void check() {
-        boolean isTrue = false;
-        boolean[][] same = new boolean[n + 1][m]; // 같은지 판단
+        boolean isTrue = false; // 원판에 수가 남아 있는지
+        boolean[][] same = new boolean[n + 1][m];
 
         for (int i = 1; i <= n; i++) {
             for (int j = 0; j < m; j++) {
-                Integer tmp = circle[i].get(j);
-                if (tmp.equals(0)) {
-                    continue;
-                }
-
-                // 가로로 인접
-                if (tmp.equals(circle[i].get((j + 1) % m))) {
-                    same[i][j] = true;
-                    same[i][(j + 1) % m] = true;
+                if (circle[i][j] != 0) {
                     isTrue = true;
-                }
 
-                // 같은 원판 내 인접
-                if (tmp.equals(circle[i].get((j - 1 < 0 ? j - 1 + m : j - 1)))) {
-                    same[i][j] = true;
-                    same[i][j - 1 < 0 ? j - 1 + m : j - 1] = true;
-                    isTrue = true;
-                }
+                    //우
+                    if (circle[i][j] == circle[i][(j + 1) % m]) {
+                        same[i][j] = true;
+                        same[i][(j + 1) % m] = true;
+                    }
 
-                // 세로로 인접
-                if (i > 1) {
-                    if (tmp.equals(circle[i - 1].get(j))) {
+                    //좌
+                    if (circle[i][j] == circle[i][(j - 1 + m) % m]) {
+                        same[i][j] = true;
+                        same[i][(j - 1 + m) % m] = true;
+                    }
+
+                    //상
+                    if (i > 1 && circle[i][j] == circle[i - 1][j]) {
                         same[i][j] = true;
                         same[i - 1][j] = true;
-                        isTrue = true;
+                    }
+
+                    //하
+                    if (i < n && circle[i][j] == circle[i + 1][j]) {
+                        same[i][j] = true;
+                        same[i + 1][j] = true;
                     }
                 }
             }
         }
 
+        boolean isRemoved = false; // 같은 수를 지웠는지
         if (isTrue) {
             for (int i = 1; i <= n; i++) {
                 for (int j = 0; j < m; j++) {
                     if (same[i][j]) {
-                        circle[i].set(j, 0); // 수를 지움
+                        circle[i][j] = 0;
+                        isRemoved = true;
                     }
                 }
             }
-        } else {
-            avg(); // 없는 경우
+        }
+
+        if (!isRemoved) {
+            avg();
         }
     }
 
     static void avg() {
-        int sum = 0;
+        double sum = 0.0;
         int count = 0;
         for (int i = 1; i <= n; i++) {
             for (int j = 0; j < m; j++) {
-                Integer tmp = circle[i].get(j);
-                if (tmp.equals(0)) {
-                    continue;
+                if (circle[i][j] != 0) {
+                    sum += circle[i][j];
+                    count++;
                 }
-                sum += tmp;
-                count++;
             }
         }
 
-        double avg = (double) sum / count;
-
-        // 평균보다 큰 수에서는 1을 빼고, 작은 수에는 1을 더함
+        double avg = sum / count;
         for (int i = 1; i <= n; i++) {
             for (int j = 0; j < m; j++) {
-                Integer tmp = circle[i].get(j);
-                if (tmp.equals(0)) {
-                    continue;
-                }
-                if (avg > tmp) {
-                    circle[i].set(j, tmp + 1);
-                } else if (tmp > avg) {
-                    circle[i].set(j, tmp - 1);
+                if (circle[i][j] != 0) {
+                    if (circle[i][j] > avg) {
+                        circle[i][j]--;
+                    } else if (circle[i][j] < avg) {
+                        circle[i][j]++;
+                    }
                 }
             }
         }
@@ -160,7 +138,7 @@ public class Main {
         int sum = 0;
         for (int i = 1; i <= n; i++) {
             for (int j = 0; j < m; j++) {
-                sum += circle[i].get(j);
+                sum += circle[i][j];
             }
         }
         return sum;
