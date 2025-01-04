@@ -3,88 +3,100 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
+
+// 16236 아기 상어
 public class Main {
-    static int n, curX, curY, sharkSize = 2, eatCount, time;
-    static int[][] map;
+    static class Shark implements Comparable<Shark> {
+        int x, y, distance;
+
+        public Shark(int x, int y, int distance) {
+            this.x = x;
+            this.y = y;
+            this.distance = distance;
+        }
+
+        public int compareTo(Shark s) {
+            if (s.distance == this.distance) {
+                if (s.x == this.x) {
+                    return this.y - s.y;
+                }
+                return this.x - s.x;
+            }
+            return this.distance - s.distance; // 우선순위
+        }
+    }
+
+    static int[][] space;
+    static int n, sharkSize = 2, eatCount; // 상어 크기, 먹은 물고기 개수
+    static int sx, sy, total; // 상어 위치, 시간
     static int[] dx = {-1, 0, 0, 1};
     static int[] dy = {0, -1, 1, 0};
+    static boolean isMove;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
-        map = new int[n][n];
-
+        space = new int[n][n];
         StringTokenizer st;
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < n; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-
-                if (map[i][j] == 9) {
-                    curX = i;
-                    curY = j;
-                    map[i][j] = 0;
+                space[i][j] = Integer.parseInt(st.nextToken());
+                if (space[i][j] == 9) {
+                    sx = i;
+                    sy = j;
+                    space[i][j] = 0; // 현재 상어 위치
                 }
             }
         }
 
-        while (true) {
-            boolean flag = false;
+        do {
+            isMove = false;
+            bfs();
+        } while (isMove);
+        System.out.println(total);
+    }
 
-            PriorityQueue<int[]> queue = new PriorityQueue<>((o1, o2) -> {
-                if (o1[2] != o2[2]) {
-                    return Integer.compare(o1[2], o2[2]);
-                } else if (o1[0] != o2[0]) {
-                    return Integer.compare(o1[0], o2[0]);
-                } else {
-                    return Integer.compare(o1[1], o2[1]);
-                }
-            });
+    static void bfs() {
+        PriorityQueue<Shark> queue = new PriorityQueue<>();
+        boolean[][] visit = new boolean[n][n];
+        queue.add(new Shark(sx, sy, 0));
+        visit[sx][sy] = true;
 
-            boolean[][] visit = new boolean[n][n];
-            visit[curX][curY] = true;
-            queue.add(new int[]{curX, curY, 0});
+        while (!queue.isEmpty()) {
+            Shark current = queue.poll();
+            int x = current.x;
+            int y = current.y;
+            int distance = current.distance;
 
-            while (!queue.isEmpty()) {
-                int[] current = queue.poll();
-                int x = current[0];
-                int y = current[1];
-                int distance = current[2];
-
-                if (map[x][y] != 0 && sharkSize > map[x][y]) {
-                    map[x][y] = 0;
-                    eatCount++;
-                    time += distance;
-                    curX = x;
-                    curY = y;
-                    flag = true;
-                    break;
-                }
-
-                for (int d = 0; d < 4; d++) {
-                    int nx = x + dx[d];
-                    int ny = y + dy[d];
-
-                    if (nx < 0 || nx >= n || ny < 0 || ny >= n || visit[nx][ny]) {
-                        continue;
-                    }
-
-                    if (map[nx][ny] > sharkSize) {
-                        continue;
-                    }
-                    visit[nx][ny] = true;
-                    queue.add(new int[]{nx, ny, distance + 1});
-                }
-            }
-
-            if (!flag) {
+            // 자신보다 작은 크기 물고기만 먹을 수 있음
+            if (space[x][y] != 0 && sharkSize > space[x][y]) {
+                isMove = true;
+                space[x][y] = 0;
+                total += distance;
+                eatCount++;
+                sx = x;
+                sy = y;
                 break;
             }
 
-            if (sharkSize == eatCount) {
-                sharkSize++;
-                eatCount = 0;
+            for (int d = 0; d < 4; d++) {
+                int nx = x + dx[d];
+                int ny = y + dy[d];
+
+                // 자신보다 크기가 큰 물고기가 있는 칸은 지날 수 없음, 나머지 칸은 가능
+                if (nx < 0 || nx >= n || ny < 0 || ny >= n || visit[nx][ny] || space[nx][ny] > sharkSize) {
+                    continue;
+                }
+                visit[nx][ny] = true;
+                queue.add(new Shark(nx, ny, distance + 1));
             }
         }
-        System.out.println(time);
+
+        // 자신의 크기와 같은 물고기를 먹을 때 크기 증가
+        if (sharkSize == eatCount) {
+            eatCount = 0;
+            sharkSize++;
+        }
     }
 }
