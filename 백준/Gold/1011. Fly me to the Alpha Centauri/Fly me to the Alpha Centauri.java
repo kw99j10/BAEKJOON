@@ -17,18 +17,18 @@ public class Main {
             int y = Integer.parseInt(st.nextToken());
 
             int distance = y - x;
-            int min = (int) Math.sqrt(y - x);
-            int tmp = min * (min + 1);
+            int count = 0; // 움직임(-1 고려 x)
+            int answer = 0;
+            while (distance > 0) {
+                count++;
+                answer++;
+                distance -= count;
 
-            int answer; // 최소 2*k-1, 2*k, 2*k+1 광년씩 이동 가능
-            if (min == Math.sqrt(distance)) {
-                answer = 2 * min - 1;
-            } else if (tmp >= distance) {
-                answer = 2 * min;
-            } else {
-                answer = 2 * min + 1;
+                if (distance > 0) {
+                    distance -= count;
+                    answer++; // 2광년 이동 조건
+                }
             }
-
             sb.append(answer).append("\n");
         }
         System.out.print(sb);
