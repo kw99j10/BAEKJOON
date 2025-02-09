@@ -42,17 +42,22 @@ class Main {
             }
         }
 
+//        for (int i = 1; i <= n; i++) {
+//            System.out.print(road[i] + " ");
+//        }
+//        System.out.println();
+
         visit = new boolean[n + 1];
         int cnt = 0;
         for (int i = 1; i <= n; i++) {
-            
+
             if (travel[i] == 0) {
-                continue;
+                continue; // 철도가 없으면 방문하지 않음
             }
-            
+
             if (!visit[find(i)]) {
                 visit[find(i)] = true;
-                cnt += Math.max(road[find(i)] / 2, 1); // 경로 2개당 하나의 철도 필요
+                cnt += Math.max(road[find(i)] / 2, 1); // 경로 2개당 하나의 철도 노선이 필요
             }
         }
         System.out.println(cnt);
