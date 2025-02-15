@@ -59,12 +59,14 @@ public class Main {
             return;
         }
 
-        int nx = (y == m - 1) ? x + 1 : x;
-        int ny = (y == m - 1) ? 0 : y + 1;
+        if (y == m) {
+            comb(x + 1, 0); // 가로에 끝에 도달하면 세로 +1
+            return;
+        }
 
         visit[x][y] = true;
-        comb(nx, ny); // 가로
+        comb(x, y + 1);
         visit[x][y] = false;
-        comb(nx, ny); // 세로
+        comb(x, y + 1);
     }
 }
