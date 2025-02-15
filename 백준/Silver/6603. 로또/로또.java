@@ -7,7 +7,6 @@ import java.util.StringTokenizer;
 public class Main {
     static int k;
     static int[] arr;
-    static boolean[] visit;
     static int[] result;
     static StringBuilder sb;
 
@@ -28,7 +27,6 @@ public class Main {
                 arr[i] = Integer.parseInt(st.nextToken());
             }
 
-            visit = new boolean[k];
             result = new int[6];
             comb(0, 0);
             sb.append("\n");
