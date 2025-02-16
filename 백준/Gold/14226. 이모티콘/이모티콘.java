@@ -1,51 +1,61 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 
-//이모티콘
+// 14226 이모티콘
 public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int s = Integer.parseInt(br.readLine());
-        bfs(s);
+    static int s;
+
+    static class Emoticon {
+        int screen, clip, time;
+
+        public Emoticon(int screen, int clip, int time) {
+            this.screen = screen;
+            this.clip = clip;
+            this.time = time;
+        }
     }
 
-    static void bfs(int s) {
-        ArrayDeque<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{1, 0, 0}); //이모티콘 개수, 클립보드 이모티콘 개수, 시간
-        boolean[][][] visit = new boolean[2001][2001][3];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        s = Integer.parseInt(br.readLine());
+        bfs();
+    }
+
+    static void bfs() {
+        ArrayDeque<Emoticon> queue = new ArrayDeque<>();
+        boolean[][] visit = new boolean[s + 1][s + 1];
+        queue.add(new Emoticon(1, 0, 0)); // 초기 화면
 
         while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            int count = current[0];
-            int clipCount = current[1];
-            int time = current[2];
+            Emoticon current = queue.poll();
+            int screen = current.screen;
+            int clip = current.clip;
+            int time = current.time;
 
-            if (count == s) {
+            if (screen == s) {
                 System.out.println(time);
                 return;
             }
 
-            if (count > 1000 || clipCount > 2000) {
+            if (screen > s || visit[screen][clip]) {
                 continue;
             }
 
-            //화면 이모티콘 복사 -> 클립보드 저장
-            if (!visit[count][count][0]) {
-                visit[count][count][0] = true;
-                queue.add(new int[]{count, count, time + 1});
+            visit[screen][clip] = true;
+
+            // 복사
+            queue.add(new Emoticon(screen, screen, time + 1));
+
+            // 붙여넣기
+            if (clip > 0) {
+                queue.add(new Emoticon(screen + clip, clip, time + 1));
             }
 
-            //클립보드 모든 이모티콘 화면에 붙여넣기
-            if (clipCount > 0 && !visit[count][count + clipCount][1]) {
-                visit[count][count + clipCount][1] = true;
-                queue.add(new int[]{count + clipCount, clipCount, time + 1});
-            }
-
-            //화면 이모티콘 하나 삭제
-            if (count > 0 && !visit[count][count - 1][2]) {
-                visit[count][count - 1][2] = true;
-                queue.add(new int[]{count - 1, clipCount, time + 1});
+            // 삭제
+            if (screen > 0) {
+                queue.add(new Emoticon(screen - 1, clip, time + 1));
             }
         }
     }
