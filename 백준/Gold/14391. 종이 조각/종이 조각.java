@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 // 14391 종이 조각
 public class Main {
     static int n, m, max;
-    static int[][] paper;
+    static int[][] arr;
     static boolean[][] visit;
 
     public static void main(String[] args) throws IOException {
@@ -14,59 +14,62 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-        paper = new int[n][m];
+
+        arr = new int[n][m];
+        visit = new boolean[n][m];
+
         for (int i = 0; i < n; i++) {
             String s = br.readLine();
             for (int j = 0; j < m; j++) {
-                paper[i][j] = s.charAt(j) - '0';
+                arr[i][j] = s.charAt(j) - '0';
             }
         }
-
-        visit = new boolean[n][m];
-        comb(0, 0);
+        backtracking(0, 0); //(0,0)부터 자르기 시작
         System.out.println(max);
     }
 
-    static void comb(int x, int y) {
+    static void backtracking(int x, int y) {
+        // visit: x축, !visit: y축
+
         if (x == n) {
             int sum = 0;
             for (int i = 0; i < n; i++) {
-                int tmp1 = 0; // 가로합
+                int sum1 = 0;
                 for (int j = 0; j < m; j++) {
                     if (visit[i][j]) {
-                        tmp1 = tmp1 * 10 + paper[i][j];
+                        sum1 = sum1 * 10 + arr[i][j];
                     } else {
-                        sum += tmp1;
-                        tmp1 = 0;
+                        sum += sum1;
+                        sum1 = 0;
                     }
                 }
-                sum += tmp1;
+                sum += sum1;
             }
 
             for (int j = 0; j < m; j++) {
-                int tmp2 = 0; // 세로합
+                int sum2 = 0;
                 for (int i = 0; i < n; i++) {
                     if (!visit[i][j]) {
-                        tmp2 = tmp2 * 10 + paper[i][j];
-                    } else{
-                        sum += tmp2;
-                        tmp2 = 0;
+                        sum2 = sum2 * 10 + arr[i][j];
+                    } else {
+                        sum += sum2;
+                        sum2 = 0;
                     }
                 }
-                sum += tmp2;
+                sum += sum2;
             }
             max = Math.max(max, sum);
             return;
         }
 
         if (y == m) {
-            comb(x + 1, 0); // 가로에 끝에 도달하면 세로 +1
+            backtracking(x + 1, 0);
             return;
         }
 
         visit[x][y] = true;
-        comb(x, y + 1);
+        backtracking(x, y + 1);
         visit[x][y] = false;
-        comb(x, y + 1);
+        backtracking(x, y + 1);
     }
 }
