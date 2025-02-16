@@ -12,19 +12,11 @@ public class Main {
             System.out.println(0);
             return; // 가로가 홀수일 경우 채울 수 없음
         }
-
-        int[] dp = new int[n + 1];
-        dp[0] = 1;
+        int[] dp = new int[31];
         dp[2] = 3;
-
-        for (int i = 3; i <= n; i++) {
-            if (i % 2 == 0) {
-                int sum = 0;
-                for (int j = 0; j < i - 3; j++) {
-                    sum += dp[j] * 2;
-                }
-                dp[i] = sum + dp[i - 2] * 3;
-            }
+        dp[4] = 11;
+        for (int i = 6; i <= n; i += 2) {
+            dp[i] = dp[i - 2] * 4 - dp[i - 4];
         }
         System.out.println(dp[n]);
     }
