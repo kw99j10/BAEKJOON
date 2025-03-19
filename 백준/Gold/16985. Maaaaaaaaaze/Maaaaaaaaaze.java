@@ -6,20 +6,20 @@ import java.util.StringTokenizer;
 
 // 16985 Maaaaaaaaaze
 public class Main {
-    static int[] dx = {0, 0, 0, 0, 1, -1};
+    static int[] dx = {1, -1, 0, 0, 0, 0};
     static int[] dy = {0, 0, 1, -1, 0, 0};
-    static int[] dz = {1, -1, 0, 0, 0, 0};
+    static int[] dz = {0, 0, 0, 0, 1, -1};
     static int[][][] grid;
-    static int[][][] tmp;
     static int min = Integer.MAX_VALUE;
-    static int[] selected;
-    static boolean[] isSelected;
+    static int[] dir = new int[5]; // 판의 회전 방향
+    static int[] order = new int[5]; // 쌓는 순서
+    static boolean[] visit = new boolean[5];
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         grid = new int[5][5][5];
-        tmp = new int[5][5][5];
+
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 st = new StringTokenizer(br.readLine());
@@ -28,79 +28,72 @@ public class Main {
                 }
             }
         }
-
-        selected = new int[5]; // 미로 방향 경우의 수
-        isSelected = new boolean[5]; // 쌓는 경우의 수
-        perm(0); // 1. 5x5 판을 자유롭게 회전 4x4x4x4x4 => 1024
+        perm(0);
         System.out.println(min == Integer.MAX_VALUE ? -1 : min);
     }
 
+    // 1. 판을 회전 (총 4방향, 5개의 판 => 4^5 => 1024
     static void perm(int idx) {
         if (idx == 5) {
-            stack(0); // 2. 판을 5개 쌓는 순서 => 5! => 120
+            perm2(0);
             return;
         }
 
         for (int d = 0; d < 4; d++) {
-            selected[idx] = d; // 미로 방향
+            dir[idx] = d;
             perm(idx + 1);
         }
     }
 
-    static void stack(int idx) {
+    // 2. 판 5개를 자유롭게 쌓음 => 5! => 120
+    static void perm2(int idx) {
         if (idx == 5) {
-            bfs(); // 3. 미로 탈출 최솟값 갱신
+            int[][][] tmp = new int[5][5][5];
+            for (int i = 0; i < 5; i++) {
+                tmp[i] = turn(grid[order[i]], dir[order[i]]);
+            }
+            bfs(tmp);
             return;
         }
 
         for (int i = 0; i < 5; i++) {
-            if (!isSelected[i]) {
-                isSelected[i] = true;
-
-                int[][] r = turn(grid[i], selected[idx]);
-                copyArray(idx, r);
-
-                stack(idx + 1);
-                isSelected[i] = false;
+            if (!visit[i]) {
+                visit[i] = true;
+                order[idx] = i;
+                perm2(idx + 1);
+                visit[i] = false;
             }
         }
     }
 
-    static void bfs() {
-
+    // 3. bfs 탐색
+    static void bfs(int[][][] tmp) {
         if (tmp[0][0][0] == 0 || tmp[4][4][4] == 0) {
-            return; // 시작 및 도착 불가
+            return; // 진행 불가
         }
 
         ArrayDeque<int[]> queue = new ArrayDeque<>();
         boolean[][][] visit = new boolean[5][5][5];
-
         queue.add(new int[]{0, 0, 0, 0});
         visit[0][0][0] = true;
 
         while (!queue.isEmpty()) {
             int[] current = queue.poll();
-            int x = current[0];
-            int y = current[1];
-            int z = current[2];
-            int count = current[3];
 
-            if (x == 4 && y == 4 && z == 4) {
-                min = Math.min(min, count);
+            if (current[0] == 4 && current[1] == 4 && current[2] == 4) {
+                min = Math.min(min, current[3]);
                 return;
             }
 
             for (int d = 0; d < 6; d++) {
-                int nx = x + dx[d];
-                int ny = y + dy[d];
-                int nz = z + dz[d];
-
-                // 0이 아닌 곳만
+                int nx = current[0] + dx[d];
+                int ny = current[1] + dy[d];
+                int nz = current[2] + dz[d];
                 if (nx < 0 || nx >= 5 || ny < 0 || ny >= 5 || nz < 0 || nz >= 5 || visit[nx][ny][nz] || tmp[nx][ny][nz] == 0) {
                     continue;
                 }
                 visit[nx][ny][nz] = true;
-                queue.add(new int[]{nx, ny, nz, count + 1});
+                queue.add(new int[]{nx, ny, nz, current[3] + 1});
             }
         }
     }
@@ -110,19 +103,11 @@ public class Main {
             int[][] tmp = new int[5][5];
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 5; j++) {
-                    tmp[j][5 - i - 1] = arr[i][j];
+                    tmp[j][4 - i] = arr[i][j];
                 }
             }
             arr = tmp;
         }
         return arr;
-    }
-
-    static void copyArray(int idx, int[][] r) {
-        for (int j = 0; j < 5; j++) {
-            for (int k = 0; k < 5; k++) {
-                tmp[idx][j][k] = r[j][k];
-            }
-        }
     }
 }
