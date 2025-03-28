@@ -7,9 +7,7 @@ import java.util.StringTokenizer;
 // 10711 모래성
 public class Main {
     static int h, w;
-    static ArrayDeque<int[]> addQ;
     static char[][] board;
-    static int[][] sand;
     static int[] dx = {1, -1, 0, 0, 1, 1, -1, -1};
     static int[] dy = {0, 0, 1, -1, 1, -1, 1, -1};
 
@@ -22,72 +20,41 @@ public class Main {
         for (int i = 0; i < h; i++) {
             board[i] = br.readLine().toCharArray();
         }
+        bfs();
+    }
 
-        sand = new int[h][w];
-        addQ = new ArrayDeque<>();
-        countSand(); // 주변 모래 개수 카운트
+    static void bfs() {
+        ArrayDeque<int[]> queue = new ArrayDeque<>(); // '모래성을 기준으로 큐에 담음
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (board[i][j] == '.') {
+                    queue.add(new int[]{i, j});
+                }
+            }
+        }
 
         int count = 0;
-        while (bfs()) {
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] current = queue.poll();
+                int x = current[0];
+                int y = current[1];
+                for (int d = 0; d < 8; d++) {
+                    int nx = x + dx[d];
+                    int ny = y + dy[d];
+                    if (nx < 0 || nx >= h || ny < 0 || ny >= w || board[nx][ny] == '.') {
+                        continue;
+                    }
+                    board[nx][ny]--;
+                    if (board[nx][ny] == '0') {
+                        board[nx][ny] = '.';
+                        queue.add(new int[]{nx, ny});
+                    }
+                }
+            }
             count++;
         }
-        System.out.println(count);
-    }
-
-    // 무너질 초기 모래를 담은 후 무너진 모래 주변으로 무너진 모래 개수를 카운팅하며 bfs 탐색
-    static void countSand() {
-        for (int i = 0; i < h * w; i++) {
-            int x = i / w;
-            int y = i % w;
-
-            int cnt = 0;
-            for (int d = 0; d < 8; d++) {
-                int nx = x + dx[d];
-                int ny = y + dy[d];
-
-                if (check(nx, ny) && board[nx][ny] == '.') {
-                    cnt++;
-                }
-            }
-            sand[x][y] = cnt;
-            if (board[x][y] != '.' && cnt >= board[x][y] - '0') {
-                addQ.add(new int[]{x, y});
-            }
-        }
-    }
-
-    static boolean bfs() {
-        ArrayDeque<int[]> delQ = new ArrayDeque<>();
-        boolean isSame = true;
-
-        while (!addQ.isEmpty()) {
-            int[] current = addQ.poll();
-            int x = current[0];
-            int y = current[1];
-
-            board[x][y] = '.'; // 모래성 무너짐
-            isSame = false;
-
-            for (int d = 0; d < 8; d++) {
-                int nx = x + dx[d];
-                int ny = y + dy[d];
-
-                if (!check(nx, ny) || board[nx][ny] == '.') {
-                    continue;
-                }
-
-                sand[nx][ny]++;
-                if (sand[nx][ny] == board[nx][ny] - '0') {
-                    delQ.add(new int[]{nx, ny}); // 무너질 모래성
-                }
-            }
-        }
-
-        addQ = delQ;
-        return !isSame;
-    }
-
-    static boolean check(int x, int y) {
-        return x >= 0 && x < h && y >= 0 && y < w;
+        System.out.println(count - 1); // 마지막 날이 겹침
     }
 }
