@@ -30,11 +30,7 @@ public class Main {
             line = r - (Integer.parseInt(st.nextToken())); // 파괴할 칸
 
             // 1. 막대기가 해당 칸 미네랄을 파괴
-            if (i % 2 == 0) {
-                destroyLeft();
-            } else {
-                destroyRight();
-            }
+            destroy(i);
 
             // 2. 클러스터 검사 및 라벨링
             check();
@@ -45,19 +41,20 @@ public class Main {
         printArray();
     }
 
-    static void destroyLeft() {
-        for (int i = 0; i < c; i++) {
-            if (cave[line][i] == 'x') {
-                cave[line][i] = '.';
-                break;
+    static void destroy(int count) {
+        if (count % 2 == 0) {
+            for (int i = 0; i < c; i++) {
+                if (cave[line][i] == 'x') {
+                    cave[line][i] = '.';
+                    break;
+                }
             }
-        }
-    }
-    static void destroyRight() {
-        for (int i = c - 1; i >= 0; i--) {
-            if (cave[line][i] == 'x') {
-                cave[line][i] = '.';
-                break;
+        } else {
+            for (int i = c - 1; i >= 0; i--) {
+                if (cave[line][i] == 'x') {
+                    cave[line][i] = '.';
+                    break;
+                }
             }
         }
     }
