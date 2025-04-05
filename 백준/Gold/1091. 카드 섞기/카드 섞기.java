@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 // 1091 카드 섞기
@@ -22,22 +23,24 @@ public class Main {
         for (int i = 0; i < n; i++) {
             s[i] = Integer.parseInt(st.nextToken());  // 섞는 방식
         }
+        
+        int[] init = p.clone();
         int count = 0;
-        while (!check()) { // 카드가 3의 배수인지 확인
-            shuffle(); // 카드 섞기
-            count++;
-            if (count > 200000) {
-                count = -1; // 섞어도 플레이어에게 줄 수 없음
-                break;
+        while (!check()) {
+            shuffle();
+            if (Arrays.equals(p, init)) {
+                System.out.println(-1); // 무한 루프
+                return;
             }
+            count++;
         }
         System.out.println(count);
     }
 
     static void shuffle() {
-        int[] tmp = p.clone();
+        int[] next = p.clone();
         for (int i = 0; i < n; i++) {
-            p[s[i]] = tmp[i];
+            p[s[i]] = next[i];
         }
     }
 
