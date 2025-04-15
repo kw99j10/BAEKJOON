@@ -41,9 +41,7 @@ public class Main {
             long sum = 0L;
             for (int j = 1; j <= 11; j++) {
                 if (!queue.get(j).isEmpty()) {
-                    int top = queue.get(j).poll();
-                    sum += top;
-                    queue.get(j).add(top);
+                    sum += queue.get(j).peek();
                 }
             }
             total = sum;
