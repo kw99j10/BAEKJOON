@@ -23,12 +23,12 @@ public class Main {
         list.add(l); // 0 ~ l 까지의 휴게소
         Collections.sort(list);
 
-        int start = 1;
+        int start = 1; // zero 오류
         int end = l - 1;
         while (start <= end) {
             int mid = (start + end) / 2; // 간격의 기준
 
-            int count = 0;
+            int count = 0; // 휴게소 개수
             for (int i = 1; i < list.size(); i++) {
                 int d = list.get(i) - list.get(i - 1);
                 count += d / mid;
@@ -40,7 +40,7 @@ public class Main {
             if (m >= count) {
                 end = mid - 1;
             } else {
-                start = mid + 1;
+                start = mid + 1; // 휴게소를 다 세울 수 없으므로 휴게소를 세울 간격을 늘림
             }
         }
         System.out.println(start);
