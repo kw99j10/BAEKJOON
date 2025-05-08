@@ -10,9 +10,9 @@ import java.util.StringTokenizer;
 public class Main {
     static int n, m;
     static ArrayList<Integer>[] lists;
-    static ArrayList<Integer> first = new ArrayList<>();
+    static ArrayDeque<Integer> queue = new ArrayDeque<>();
     static int[] time;
-
+    static int[] count;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
@@ -31,15 +31,15 @@ public class Main {
             }
         }
 
+        count = new int[n + 1]; // 루머를 믿는 사람 수
         time = new int[n + 1]; // 루머를 믿기 시작한 시간
         Arrays.fill(time, -1);
-
 
         m = Integer.parseInt(br.readLine());
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < m; i++) {
             int num = Integer.parseInt(st.nextToken());
-            first.add(num);
+            queue.add(num);
             time[num] = 0; // 최초 유포자
         }
         bfs();
@@ -52,40 +52,21 @@ public class Main {
     }
 
     static void bfs() {
-        ArrayDeque<int[]> queue = new ArrayDeque<>();
-        for (int i = 0; i < m; i++) {
-            queue.add(new int[]{first.get(i), 0});
-        }
 
         // 매분 루머를 믿는 사람이 모든 주변인에게 퍼뜨림
         while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            int node = current[0]; // 루머를 믿는 사람
-            int rumor = current[1]; // 믿는 순간의 시간
+            Integer current = queue.poll();
 
-            // 처음 믿은 시간
-            time[node] = (time[node] == -1) ? rumor : Math.min(time[node], rumor);
-
-            // 현재 믿는 사람의 주변인 시간을 체크
-            for (int i = 0; i < lists[node].size(); i++) {
-                int next = lists[node].get(i);
-                int size = lists[next].size();
-
-                if (time[next] >= 0) {
-                    continue; // 이미 루머를 믿는 사람이면 넘어감
+            for (Integer next : lists[current]) {
+                if (time[next] != -1) {
+                    continue;
                 }
-
-                int count = 0;
-                for (int j = 0; j < size; j++) {
-                    int nx = lists[next].get(j);
-                    if (time[nx] >= 0) {
-                        count++;
-                    }
-                }
+                count[next]++;
 
                 // 주변인 절반 이상이 루머를 믿으면 자신도 믿음
-                if (count * 2 >= size) {
-                    queue.add(new int[]{next, rumor + 1});
+                if (count[next] * 2 >= lists[next].size()) {
+                    time[next] = time[current] + 1;
+                    queue.add(next);
                 }
             }
         }
