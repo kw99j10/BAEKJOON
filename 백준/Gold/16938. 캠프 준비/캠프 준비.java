@@ -6,39 +6,51 @@ import java.util.StringTokenizer;
 // 16938 캠프 준비
 public class Main {
     static int n, l, r, x, count;
-    static int[] subject;
+    static int[] arr;
     static boolean[] visit;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken()); // 문제 수
+        n = Integer.parseInt(st.nextToken());
         l = Integer.parseInt(st.nextToken());
         r = Integer.parseInt(st.nextToken());
-        x = Integer.parseInt(st.nextToken()); // 문제 난이도 차
+        x = Integer.parseInt(st.nextToken());
 
-        subject = new int[n];
-        visit = new boolean[n];
+        arr = new int[n];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            subject[i] = Integer.parseInt(st.nextToken());
+            arr[i] = Integer.parseInt(st.nextToken());
         }
-        comb(0, 0, 0, Integer.MAX_VALUE, Integer.MIN_VALUE);
+
+        visit = new boolean[n];
+        comb(0, 0);
         System.out.println(count);
     }
 
-    static void comb(int idx, int cnt, int sum, int easy, int hard) {
-
-        if (cnt >= 2 && (sum >= l && sum <= r) && hard - easy >= x) {
-            count++;
-        }
-
-        for (int i = idx; i < n; i++) {
-            if (!visit[i]) {
-                visit[i] = true;
-                comb(i, cnt + 1, sum + subject[i], Math.min(easy, subject[i]), Math.max(hard, subject[i]));
-                visit[i] = false;
+    static void comb(int idx, int cnt) {
+        if (idx == n) {
+            if (cnt >= 2) {
+                int sum = 0;
+                int min = Integer.MAX_VALUE;
+                int max = 0;
+                for (int i = 0; i < n; i++) {
+                    if (visit[i]) {
+                        sum += arr[i];
+                        min = Math.min(min, arr[i]);
+                        max = Math.max(max, arr[i]);
+                    }
+                }
+                if (sum >= l && sum <= r && max - min >= x) {
+                    count++;
+                }
             }
+            return;
         }
+
+        visit[idx] = true;
+        comb(idx + 1, cnt + 1);
+        visit[idx] = false;
+        comb(idx + 1, cnt);
     }
 }
