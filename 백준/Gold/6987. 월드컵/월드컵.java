@@ -7,7 +7,6 @@ import java.util.StringTokenizer;
 public class Main {
     static class Team {
         int win, draw, lose;
-
         public Team(int win, int draw, int lose) {
             this.win = win;
             this.draw = draw;
@@ -16,7 +15,6 @@ public class Main {
     }
 
     static Team[] team;
-    static boolean isPossible;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -25,29 +23,25 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 4; i++) {
 
-            isPossible = true;
+            boolean isPossible = true;
             team = new Team[6];
 
             st = new StringTokenizer(br.readLine());
 
             for (int j = 0; j < 6; j++) {
-                int sum = 0; // 각 팀은 5경기를 함
                 int win = Integer.parseInt(st.nextToken());
                 int draw = Integer.parseInt(st.nextToken());
                 int lose = Integer.parseInt(st.nextToken());
                 team[j] = new Team(win, draw, lose);
 
-                sum = win + draw + lose;
-                if (sum != 5) {
+                if (win + draw + lose != 5) {
                     isPossible = false;
                     break;
                 }
             }
 
-            if (isPossible) {
-                if (!checkSum() || !backtracking(0, 1, 0)) {
-                    isPossible = false;
-                }
+            if (isPossible && (!checkSum() || !backtracking(0, 1, 0))) {
+                isPossible = false;
             }
             sb.append(isPossible ? 1 : 0).append(" ");
         }
@@ -55,17 +49,13 @@ public class Main {
     }
 
     static boolean checkSum() {
-        int sum1 = 0;
-        int sum2 = 0;
-        int sum3 = 0;
+        int sum1 = 0, sum2 = 0, sum3 = 0;
 
         for (int j = 0; j < 6; j++) {
             sum1 += team[j].win;
             sum2 += team[j].draw;
             sum3 += team[j].lose;
         }
-
-        // 모든 경기의 합은 30, 승, 패는 같아야하며, draw가 홀수일 수 없음
         return (sum1 + sum2 + sum3 == 30) && (sum1 == sum3) && (sum2 % 2 == 0);
     }
 
@@ -97,7 +87,6 @@ public class Main {
             team[cur].lose++;
             team[nxt].win++;
         }
-
         return false;
     }
 }
