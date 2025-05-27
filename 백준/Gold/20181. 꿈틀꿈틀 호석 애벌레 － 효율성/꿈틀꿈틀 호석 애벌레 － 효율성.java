@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-// 20167 꿈틀꿈틀 호석 애벌레 - 기능성
+// 20181 꿈틀꿈틀 호석 애벌레 - 효율성
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,14 +17,14 @@ public class Main {
             value[i] = Integer.parseInt(st.nextToken());
         }
 
-        int[] dp = new int[n + 1];
-        int sum = 0;
+        long[] dp = new long[n + 1];
+        long sum = 0L;
         int left = 1, right = 1;
         while (right <= n) {
             sum += value[right];
 
             while (left <= right && k <= sum) {
-                int energy = sum - k; // 탈피 에너지
+                long energy = (int) (sum - k); // 탈피 에너지
                 dp[right] = Math.max(dp[right], dp[left - 1] + energy);
                 sum -= value[left++];
             }
